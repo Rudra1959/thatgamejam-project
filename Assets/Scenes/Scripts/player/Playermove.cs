@@ -1,70 +1,69 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Spine.Unity; // Required for Spine
 
-public class PlayerController : MonoBehaviour
+public class PlayerController25D : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed = 8f;
-    public bool isIsometric = true;
+    public float moveSpeed = 7f;
+    public float jumpForce = 12f;
+    
+    [Header("Spine Animations")]
+    public SkeletonAnimation skeletonAnimation;
+    [SpineAnimation] public string idleAnim = "idle";
+    [SpineAnimation] public string walkAnim = "walk";
 
     [Header("Camera")]
-    public Camera mainCamera;
-    public float cameraSmoothTime = 0.15f;
-    public Vector3 isoOffset = new Vector3(-8, 8, -8);
-    public Vector3 sideOffset = new Vector3(0, 3, -10);
+    public Vector3 cameraOffset = new Vector3(0, 3, -10);
+    public float camSmoothSpeed = 0.12f;
 
     private Rigidbody rb;
-    private Vector3 moveDirection;
-    private Vector3 camVelocity;
+    private Vector2 input;
+    private Vector3 camVelocity = Vector3.zero;
+    private Camera mainCam;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        mainCam = Camera.main;
+        
+        // Ensure Rigidbody is set for 2.5D
         rb.interpolation = RigidbodyInterpolation.Interpolate;
-
-        if (!mainCamera)
-            mainCamera = Camera.main;
+        rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
     }
 
     void Update()
     {
+        // 1. Get Input (Left/Right only)
         float h = 0;
-        float v = 0;
+        if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed) h = -1;
+        if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed) h = 1;
+        input = new Vector2(h, 0);
 
-        if (Keyboard.current != null)
+        // 2. Jump
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && Mathf.Abs(rb.linearVelocity.y) < 0.01f)
         {
-            if (Keyboard.current.wKey.isPressed) v = 1;
-            if (Keyboard.current.sKey.isPressed) v = -1;
-            if (Keyboard.current.aKey.isPressed) h = -1;
-            if (Keyboard.current.dKey.isPressed) h = 1;
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
-        if (isIsometric)
-            moveDirection = new Vector3(h - v, 0, h + v).normalized;
-        else
-            moveDirection = new Vector3(h, 0, 0).normalized;
+        // 3. Flip Spine Character
+        if (h != 0) skeletonAnimation.skeleton.ScaleX = (h > 0) ? 1 : -1;
+
+        // 4. Set Animation
+        string requiredAnim = (h != 0) ? walkAnim : idleAnim;
+        if (skeletonAnimation.AnimationName != requiredAnim)
+        {
+            skeletonAnimation.state.SetAnimation(0, requiredAnim, true);
+        }
     }
 
     void FixedUpdate()
     {
-        Vector3 velocity = moveDirection * moveSpeed;
-        velocity.y = rb.linearVelocity.y;
-        rb.linearVelocity = velocity;
+        // 5. Physics Move
+        rb.linearVelocity = new Vector3(input.x * moveSpeed, rb.linearVelocity.y, 0);
 
-        if (moveDirection != Vector3.zero)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(moveDirection);
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, 0.2f));
-        }
-    }
-
-    void LateUpdate()
-    {
-        Vector3 targetCamPos = transform.position + (isIsometric ? isoOffset : sideOffset);
-        mainCamera.transform.position =
-            Vector3.SmoothDamp(mainCamera.transform.position, targetCamPos, ref camVelocity, cameraSmoothTime);
-
-        mainCamera.transform.LookAt(transform.position + Vector3.up);
+        // 6. Camera Follow (Perfectly smooth)
+        Vector3 targetPos = transform.position + cameraOffset;
+        mainCam.transform.position = Vector3.SmoothDamp(mainCam.transform.position, targetPos, ref camVelocity, camSmoothSpeed);
     }
 }
