@@ -33,13 +33,17 @@ namespace Spine {
 	/// <para>
 	/// See <a href="http://esotericsoftware.com/spine-physics-constraints">Physics constraints</a> in the Spine User Guide.</para>
 	/// </summary>
-	public class PhysicsConstraintData : ConstraintData {
+	public class PhysicsConstraintData : ConstraintData<PhysicsConstraint, PhysicsConstraintPose> {
 		internal BoneData bone;
-		internal float x, y, rotate, scaleX, shearX, limit;
-		internal float step, inertia, strength, damping, massInverse, wind, gravity, mix;
+		internal float x, y, rotate, scaleX, shearX, limit, step;
 		internal bool inertiaGlobal, strengthGlobal, dampingGlobal, massGlobal, windGlobal, gravityGlobal, mixGlobal;
 
-		public PhysicsConstraintData (string name) : base(name) {
+		public PhysicsConstraintData (string name)
+			: base(name, new PhysicsConstraintPose()) {
+		}
+
+		override public IConstraint Create (Skeleton skeleton) {
+			return new PhysicsConstraint(this, skeleton);
 		}
 
 		/// <summary>The bone constrained by this physics constraint.</summary>
@@ -52,14 +56,6 @@ namespace Spine {
 		public float ScaleX { get { return scaleX; } set { scaleX = value; } }
 		public float ShearX { get { return shearX; } set { shearX = value; } }
 		public float Limit { get { return limit; } set { limit = value; } }
-		public float Inertia { get { return inertia; } set { inertia = value; } }
-		public float Strength { get { return strength; } set { strength = value; } }
-		public float Damping { get { return damping; } set { damping = value; } }
-		public float MassInverse { get { return massInverse; } set { massInverse = value; } }
-		public float Wind { get { return wind; } set { wind = value; } }
-		public float Gravity { get { return gravity; } set { gravity = value; } }
-		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained poses.</summary>
-		public float Mix { get { return mix; } set { mix = value; } }
 		public bool InertiaGlobal { get { return inertiaGlobal; } set { inertiaGlobal = value; } }
 		public bool StrengthGlobal { get { return strengthGlobal; } set { strengthGlobal = value; } }
 		public bool DampingGlobal { get { return dampingGlobal; } set { dampingGlobal = value; } }

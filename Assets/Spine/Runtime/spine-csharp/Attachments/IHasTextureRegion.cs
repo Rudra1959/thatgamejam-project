@@ -27,10 +27,15 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-using System.Text;
+#if (UNITY_5 || UNITY_5_3_OR_NEWER || UNITY_WSA || UNITY_WP8 || UNITY_WP8_1)
+#define IS_UNITY
+#endif
 
 namespace Spine {
+#if IS_UNITY
+	using Color32F = UnityEngine.Color;
+#endif
+
 	public interface IHasTextureRegion {
 		/// <summary>The name used to find the <see cref="Region"/></summary>
 		string Path { get; set; }
@@ -46,10 +51,9 @@ namespace Spine {
 		/// </summary>
 		void UpdateRegion ();
 
-		float R { get; set; }
-		float G { get; set; }
-		float B { get; set; }
-		float A { get; set; }
+		Color32F GetColor ();
+		void SetColor (Color32F color);
+		void SetColor (float r, float g, float b, float a);
 
 		Sequence Sequence { get; set; }
 	}

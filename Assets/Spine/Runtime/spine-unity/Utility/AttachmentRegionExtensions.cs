@@ -81,11 +81,7 @@ namespace Spine.Unity.AttachmentTools {
 			attachment.ScaleX = 1;
 			attachment.ScaleY = 1;
 			attachment.Rotation = rotation;
-
-			attachment.R = 1;
-			attachment.G = 1;
-			attachment.B = 1;
-			attachment.A = 1;
+			attachment.SetColor(Color.white);
 
 			// pass OriginalWidth and OriginalHeight because UpdateOffset uses it in its calculation.
 			TextureRegion textreRegion = attachment.Region;

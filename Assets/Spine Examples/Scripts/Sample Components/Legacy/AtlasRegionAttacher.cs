@@ -55,25 +55,26 @@ namespace Spine.Unity.Examples {
 			if (skeletonRenderer.valid) Apply(skeletonRenderer);
 		}
 
-		void Apply (SkeletonRenderer skeletonRenderer) {
+		void Apply (ISkeletonRenderer skeletonRenderer) {
 			if (!this.enabled) return;
 
 			atlas = atlasAsset.GetAtlas();
 			if (atlas == null) return;
-			float scale = skeletonRenderer.skeletonDataAsset.scale;
+			float scale = skeletonRenderer.SkeletonDataAsset.scale;
 
 			foreach (SlotRegionPair entry in attachments) {
 				Slot slot = skeletonRenderer.Skeleton.FindSlot(entry.slot);
-				Attachment originalAttachment = slot.Attachment;
+				var slotPose = slot.AppliedPose;
+				Attachment originalAttachment = slotPose.Attachment;
 				AtlasRegion region = atlas.FindRegion(entry.region);
 
 				if (region == null) {
-					slot.Attachment = null;
+					slotPose.Attachment = null;
 				} else if (inheritProperties && originalAttachment != null) {
-					slot.Attachment = originalAttachment.GetRemappedClone(region, true, true, scale);
+					slotPose.Attachment = originalAttachment.GetRemappedClone(region, true, true, scale);
 				} else {
 					RegionAttachment newRegionAttachment = region.ToRegionAttachment(region.name, scale);
-					slot.Attachment = newRegionAttachment;
+					slotPose.Attachment = newRegionAttachment;
 				}
 			}
 		}

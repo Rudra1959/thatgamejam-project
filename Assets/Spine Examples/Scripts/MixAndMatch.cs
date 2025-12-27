@@ -136,7 +136,7 @@ namespace Spine.Unity.Examples {
 				skeleton.SetSkin(customSkin); // Just use the custom skin directly.
 			}
 
-			skeleton.SetSlotsToSetupPose(); // Use the pose from setup pose.
+			skeleton.SetupPoseSlots(); // Use the pose from setup pose.
 			skeletonAnimation.Update(0); // Use the pose in the currently active animation.
 
 			// `GetRepackedSkin()` and each call to `GetRemappedClone()` with parameter `premultiplyAlpha` set to `true`

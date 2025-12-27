@@ -42,13 +42,13 @@ namespace Spine {
 		// Reason is that there is no efficient way to replace or access an already added element, losing any benefits.
 		private Dictionary<SkinKey, SkinEntry> attachments = new Dictionary<SkinKey, SkinEntry>(SkinKeyComparer.Instance);
 		internal readonly ExposedList<BoneData> bones = new ExposedList<BoneData>();
-		internal readonly ExposedList<ConstraintData> constraints = new ExposedList<ConstraintData>();
+		internal readonly ExposedList<IConstraintData> constraints = new ExposedList<IConstraintData>();
 
 		public string Name { get { return name; } }
 		/// <summary>Returns all attachments contained in this skin.</summary>
 		public ICollection<SkinEntry> Attachments { get { return attachments.Values; } }
 		public ExposedList<BoneData> Bones { get { return bones; } }
-		public ExposedList<ConstraintData> Constraints { get { return constraints; } }
+		public ExposedList<IConstraintData> Constraints { get { return constraints; } }
 
 		public Skin (string name) {
 			if (name == null) throw new ArgumentNullException("name", "name cannot be null.");
@@ -67,7 +67,7 @@ namespace Spine {
 			foreach (BoneData data in skin.bones)
 				if (!bones.Contains(data)) bones.Add(data);
 
-			foreach (ConstraintData data in skin.constraints)
+			foreach (IConstraintData data in skin.constraints)
 				if (!constraints.Contains(data)) constraints.Add(data);
 
 			foreach (KeyValuePair<SkinKey, SkinEntry> item in skin.attachments) {
@@ -81,7 +81,7 @@ namespace Spine {
 			foreach (BoneData data in skin.bones)
 				if (!bones.Contains(data)) bones.Add(data);
 
-			foreach (ConstraintData data in skin.constraints)
+			foreach (IConstraintData data in skin.constraints)
 				if (!constraints.Contains(data)) constraints.Add(data);
 
 			foreach (KeyValuePair<SkinKey, SkinEntry> item in skin.attachments) {
@@ -134,10 +134,9 @@ namespace Spine {
 			Slot[] slots = skeleton.slots.Items;
 			foreach (KeyValuePair<SkinKey, SkinEntry> item in oldSkin.attachments) {
 				SkinEntry entry = item.Value;
-				int slotIndex = entry.slotIndex;
-				Slot slot = slots[slotIndex];
+				SlotPose slot = slots[entry.slotIndex].pose;
 				if (slot.Attachment == entry.attachment) {
-					Attachment attachment = GetAttachment(slotIndex, entry.name);
+					Attachment attachment = GetAttachment(entry.slotIndex, entry.name);
 					if (attachment != null) slot.Attachment = attachment;
 				}
 			}

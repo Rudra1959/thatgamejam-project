@@ -91,7 +91,7 @@ namespace Spine.Unity.Examples {
 		}
 
 		void RefreshSkeletonAttachments () {
-			skeletonAnimation.Skeleton.SetSlotsToSetupPose();
+			skeletonAnimation.Skeleton.SetupPoseSlots();
 			skeletonAnimation.AnimationState.Apply(skeletonAnimation.Skeleton); //skeletonAnimation.Update(0);
 		}
 

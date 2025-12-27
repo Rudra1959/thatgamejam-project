@@ -75,7 +75,7 @@ namespace Spine {
 			for (int i = 0; i < slotCount; i++) {
 				Slot slot = slots[i];
 				if (!slot.bone.active) continue;
-				BoundingBoxAttachment boundingBox = slot.attachment as BoundingBoxAttachment;
+				BoundingBoxAttachment boundingBox = slot.applied.attachment as BoundingBoxAttachment;
 				if (boundingBox == null) continue;
 				boundingBoxes.Add(boundingBox);
 
@@ -91,7 +91,7 @@ namespace Spine {
 				int count = boundingBox.worldVerticesLength;
 				polygon.Count = count;
 				if (polygon.Vertices.Length < count) polygon.Vertices = new float[count];
-				boundingBox.ComputeWorldVertices(slot, polygon.Vertices);
+				boundingBox.ComputeWorldVertices(skeleton, slot, polygon.Vertices);
 			}
 
 			if (updateAabb) {

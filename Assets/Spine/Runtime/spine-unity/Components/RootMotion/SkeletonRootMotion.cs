@@ -46,7 +46,7 @@ namespace Spine.Unity {
 	/// For <c>SkeletonMecanim</c> please use
 	/// <see cref="SkeletonMecanimRootMotion">SkeletonMecanimRootMotion</see> instead.
 	/// </remarks>
-	[HelpURL("http://esotericsoftware.com/spine-unity#SkeletonRootMotion")]
+	[HelpURL("https://esotericsoftware.com/spine-unity-utility-components#SkeletonRootMotion")]
 	public class SkeletonRootMotion : SkeletonRootMotionBase {
 		#region Inspector
 		const int DefaultAnimationTrackFlags = -1;
@@ -90,7 +90,7 @@ namespace Spine.Unity {
 
 		public override void Initialize () {
 			base.Initialize();
-			IAnimationStateComponent animstateComponent = skeletonComponent as IAnimationStateComponent;
+			IAnimationStateComponent animstateComponent = animationComponent as IAnimationStateComponent;
 			this.animationState = (animstateComponent != null) ? animstateComponent.AnimationState : null;
 
 			skeletonGraphic = this.GetComponent<SkeletonGraphic>();

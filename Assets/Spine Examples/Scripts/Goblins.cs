@@ -47,13 +47,13 @@ namespace Spine.Unity.Examples {
 		}
 
 		// This is called after the animation is applied to the skeleton and can be used to adjust the bones dynamically.
-		public void UpdateLocal (ISkeletonAnimation skeletonRenderer) {
-			headBone.Rotation += extraRotation;
+		public void UpdateLocal (ISkeletonRenderer skeletonRenderer) {
+			headBone.Pose.Rotation += extraRotation;
 		}
 
 		public void OnMouseDown () {
 			skeletonAnimation.Skeleton.SetSkin(girlSkin ? "goblin" : "goblingirl");
-			skeletonAnimation.Skeleton.SetSlotsToSetupPose();
+			skeletonAnimation.Skeleton.SetupPoseSlots();
 
 			girlSkin = !girlSkin;
 

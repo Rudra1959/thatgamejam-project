@@ -47,12 +47,12 @@ namespace Spine {
 
 			ExposedList<int> indicesArray = this.indicesArray;
 			indicesArray.Clear();
-			int[] indices = indicesArray.Resize(vertexCount).Items;
+			int[] indices = indicesArray.EnsureSize(vertexCount).Items;
 			for (int i = 0; i < vertexCount; i++)
 				indices[i] = i;
 
 			ExposedList<bool> isConcaveArray = this.isConcaveArray;
-			bool[] isConcave = isConcaveArray.Resize(vertexCount).Items;
+			bool[] isConcave = isConcaveArray.EnsureSize(vertexCount).Items;
 			for (int i = 0, n = vertexCount; i < n; ++i)
 				isConcave[i] = IsConcave(i, vertexCount, vertices, indices);
 

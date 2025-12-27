@@ -115,7 +115,7 @@ namespace Spine.Unity.Examples {
 			}
 
 			// Dummy physics and controller using UnityEngine.CharacterController.
-			Vector3 gravityDeltaVelocity = Physics.gravity * gravityScale * dt;
+			Vector3 gravityDeltaVelocity = UnityEngine.Physics.gravity * gravityScale * dt;
 
 			if (doJump) {
 				velocity.y = jumpSpeed;

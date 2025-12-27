@@ -85,7 +85,7 @@ namespace Spine.Unity.Editor {
 			if (multiObject) return;
 			if (utilityBone.bone == null) return;
 
-			Skeleton skeleton = utilityBone.bone.Skeleton;
+			Skeleton skeleton = skeletonUtility.SkeletonComponent.Skeleton;
 			int slotCount = skeleton.Slots.Count;
 			Skin skin = skeleton.Skin;
 			if (skeleton.Skin == null)
@@ -208,21 +208,22 @@ namespace Spine.Unity.Editor {
 					EditorGUILayout.LabelField(slot.Data.Name);
 					EditorGUI.indentLevel++;
 					{
+						Skeleton skeleton = skeletonUtility.SkeletonComponent.Skeleton;
 						foreach (BoundingBoxAttachment box in boundingBoxes) {
 							using (new GUILayout.HorizontalScope()) {
 								GUILayout.Space(30);
 								string buttonLabel = box.IsWeighted() ? box.Name + " (!)" : box.Name;
 								if (GUILayout.Button(buttonLabel, GUILayout.Width(200))) {
-									utilityBone.bone.Skeleton.UpdateWorldTransform(Skeleton.Physics.Update);
+									skeleton.UpdateWorldTransform(Physics.Update);
 									Transform bbTransform = utilityBone.transform.Find("[BoundingBox]" + box.Name); // Use FindChild in older versions of Unity.
 									if (bbTransform != null) {
 										PolygonCollider2D originalCollider = bbTransform.GetComponent<PolygonCollider2D>();
 										if (originalCollider != null)
-											SkeletonUtility.SetColliderPointsLocal(originalCollider, slot, box);
+											SkeletonUtility.SetColliderPointsLocal(originalCollider, skeleton, slot, box);
 										else
-											SkeletonUtility.AddBoundingBoxAsComponent(box, slot, bbTransform.gameObject);
+											SkeletonUtility.AddBoundingBoxAsComponent(box, skeleton, slot, bbTransform.gameObject);
 									} else {
-										PolygonCollider2D newPolygonCollider = SkeletonUtility.AddBoundingBoxGameObject(null, box, slot, utilityBone.transform);
+										PolygonCollider2D newPolygonCollider = SkeletonUtility.AddBoundingBoxGameObject(null, box, skeleton, slot, utilityBone.transform);
 										bbTransform = newPolygonCollider.transform;
 									}
 									EditorGUIUtility.PingObject(bbTransform);

@@ -67,7 +67,7 @@ namespace Spine {
 			setupIndex = other.setupIndex;
 		}
 
-		public void Apply (Slot slot, IHasTextureRegion attachment) {
+		public void Apply (SlotPose slot, IHasTextureRegion attachment) {
 			int index = slot.SequenceIndex;
 			if (index == -1) index = setupIndex;
 			if (index >= regions.Length) index = regions.Length - 1;
@@ -79,7 +79,7 @@ namespace Spine {
 		}
 
 		public string GetPath (string basePath, int index) {
-			StringBuilder buffer = new StringBuilder(basePath.Length + digits);
+			var buffer = new StringBuilder(basePath.Length + digits);
 			buffer.Append(basePath);
 			string frame = (start + index).ToString();
 			for (int i = digits - frame.Length; i > 0; i--)

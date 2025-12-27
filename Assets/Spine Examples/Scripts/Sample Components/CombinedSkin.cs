@@ -53,7 +53,7 @@ namespace Spine.Unity.Examples {
 			}
 
 			skeleton.SetSkin(combinedSkin);
-			skeleton.SetToSetupPose();
+			skeleton.SetupPose();
 			IAnimationStateComponent animationStateComponent = skeletonComponent as IAnimationStateComponent;
 			if (animationStateComponent != null) animationStateComponent.AnimationState.Apply(skeleton);
 		}

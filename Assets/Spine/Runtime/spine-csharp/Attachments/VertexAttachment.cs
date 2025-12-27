@@ -31,7 +31,7 @@ using System;
 
 namespace Spine {
 	/// <summary>>An attachment with vertices that are transformed by one or more bones and can be deformed by a slot's
-	/// <see cref="Slot.Deform"/>.</summary>
+	/// <see cref="SlotPose.Deform"/>.</summary>
 	public abstract class VertexAttachment : Attachment {
 		static int nextID = 0;
 		static readonly Object nextIdLock = new Object();
@@ -83,13 +83,13 @@ namespace Spine {
 			worldVerticesLength = other.worldVerticesLength;
 		}
 
-		public void ComputeWorldVertices (Slot slot, float[] worldVertices) {
-			ComputeWorldVertices(slot, 0, worldVerticesLength, worldVertices, 0);
+		public void ComputeWorldVertices (Skeleton skeleton, Slot slot, float[] worldVertices) {
+			ComputeWorldVertices(skeleton, slot, 0, worldVerticesLength, worldVertices, 0);
 		}
 
 		/// <summary>
-		/// Transforms the attachment's local <see cref="Vertices"/> to world coordinates. If the slot's <see cref="Slot.Deform"/> is
-		/// not empty, it is used to deform the vertices.
+		/// Transforms the attachment's local <see cref="Vertices"/> to world coordinates. If the slot's <see cref="SlotPose.Deform"/>
+		/// is not empty, it is used to deform the vertices.
 		/// <para />
 		/// See <a href="http://esotericsoftware.com/spine-runtime-skeletons#World-transforms">World transforms</a> in the Spine
 		/// Runtimes Guide.
@@ -99,14 +99,14 @@ namespace Spine {
 		/// <param name="worldVertices">The output world vertices. Must have a length greater than or equal to <paramref name="offset"/> + <paramref name="count"/>.</param>
 		/// <param name="offset">The <paramref name="worldVertices"/> index to begin writing values.</param>
 		/// <param name="stride">The number of <paramref name="worldVertices"/> entries between the value pairs written.</param>
-		public virtual void ComputeWorldVertices (Slot slot, int start, int count, float[] worldVertices, int offset, int stride = 2) {
+		public virtual void ComputeWorldVertices (Skeleton skeleton, Slot slot, int start, int count, float[] worldVertices, int offset, int stride = 2) {
 			count = offset + (count >> 1) * stride;
-			ExposedList<float> deformArray = slot.deform;
+			ExposedList<float> deformArray = slot.AppliedPose.deform;
 			float[] vertices = this.vertices;
 			int[] bones = this.bones;
 			if (bones == null) {
 				if (deformArray.Count > 0) vertices = deformArray.Items;
-				Bone bone = slot.bone;
+				BonePose bone = slot.bone.AppliedPose;
 				float x = bone.worldX, y = bone.worldY;
 				float a = bone.a, b = bone.b, c = bone.c, d = bone.d;
 				for (int vv = start, w = offset; w < count; vv += 2, w += stride) {
@@ -122,14 +122,14 @@ namespace Spine {
 				v += n + 1;
 				skip += n;
 			}
-			Bone[] skeletonBones = slot.bone.skeleton.bones.Items;
+			Bone[] skeletonBones = skeleton.bones.Items;
 			if (deformArray.Count == 0) {
 				for (int w = offset, b = skip * 3; w < count; w += stride) {
 					float wx = 0, wy = 0;
 					int n = bones[v++];
 					n += v;
 					for (; v < n; v++, b += 3) {
-						Bone bone = skeletonBones[bones[v]];
+						BonePose bone = skeletonBones[bones[v]].AppliedPose;
 						float vx = vertices[b], vy = vertices[b + 1], weight = vertices[b + 2];
 						wx += (vx * bone.a + vy * bone.b + bone.worldX) * weight;
 						wy += (vx * bone.c + vy * bone.d + bone.worldY) * weight;
@@ -144,7 +144,7 @@ namespace Spine {
 					int n = bones[v++];
 					n += v;
 					for (; v < n; v++, b += 3, f += 2) {
-						Bone bone = skeletonBones[bones[v]];
+						BonePose bone = skeletonBones[bones[v]].AppliedPose;
 						float vx = vertices[b] + deform[f], vy = vertices[b + 1] + deform[f + 1], weight = vertices[b + 2];
 						wx += (vx * bone.a + vy * bone.b + bone.worldX) * weight;
 						wy += (vx * bone.c + vy * bone.d + bone.worldY) * weight;

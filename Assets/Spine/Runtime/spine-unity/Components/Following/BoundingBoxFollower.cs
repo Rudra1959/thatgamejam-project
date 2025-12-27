@@ -31,8 +31,13 @@
 #define NEW_PREFAB_SYSTEM
 #endif
 
+#if !SPINE_AUTO_UPGRADE_COMPONENTS_OFF
+#define AUTO_UPGRADE_TO_43_COMPONENTS
+#endif
+
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Spine.Unity {
 
@@ -41,8 +46,8 @@ namespace Spine.Unity {
 #else
 	[ExecuteInEditMode]
 #endif
-	[HelpURL("http://esotericsoftware.com/spine-unity#BoundingBoxFollower")]
-	public class BoundingBoxFollower : MonoBehaviour {
+	[HelpURL("http://esotericsoftware.com/spine-unity-utility-components#BoundingBoxFollower")]
+	public class BoundingBoxFollower : MonoBehaviour, IUpgradable {
 		internal static bool DebugMessages = true;
 
 		#region Inspector
@@ -67,6 +72,14 @@ namespace Spine.Unity {
 		public PolygonCollider2D CurrentCollider { get { return currentCollider; } }
 		public bool IsTrigger { get { return isTrigger; } }
 
+#if UNITY_EDITOR && AUTO_UPGRADE_TO_43_COMPONENTS
+		protected void Awake () {
+			if (!Application.isPlaying && !wasUpgradedTo43) {
+				UpgradeTo43();
+			}
+		}
+#endif
+
 		void Start () {
 			Initialize();
 		}
@@ -80,7 +93,7 @@ namespace Spine.Unity {
 			Initialize();
 		}
 
-		void HandleRebuild (SkeletonRenderer sr) {
+		void HandleRebuild (ISkeletonRenderer sr) {
 			//if (BoundingBoxFollower.DebugMessages) Debug.Log("Skeleton was rebuilt. Repopulating BoundingBoxFollower.");
 			Initialize();
 		}
@@ -99,7 +112,6 @@ namespace Spine.Unity {
 			// Don't reinitialize if the setup did not change.
 			if (!overwrite &&
 				colliderTable.Count > 0 && slot != null &&    // Slot is set and colliders already populated.
-				skeletonRenderer.skeleton == slot.Skeleton && // Skeleton object did not change.
 				slotName == slot.Data.Name                    // Slot object did not change.
 			)
 				return;
@@ -126,10 +138,10 @@ namespace Spine.Unity {
 			PolygonCollider2D[] colliders = GetComponents<PolygonCollider2D>();
 			if (this.gameObject.activeInHierarchy) {
 				foreach (Skin skin in skeleton.Data.Skins)
-					AddCollidersForSkin(skin, slotIndex, colliders, ref requiredCollidersCount);
+					AddCollidersForSkin(skin, skeleton, slotIndex, colliders, ref requiredCollidersCount);
 
 				if (skeleton.Skin != null)
-					AddCollidersForSkin(skeleton.Skin, slotIndex, colliders, ref requiredCollidersCount);
+					AddCollidersForSkin(skeleton.Skin, skeleton, slotIndex, colliders, ref requiredCollidersCount);
 			}
 			DisposeExcessCollidersAfter(requiredCollidersCount);
 			skinBoneEnabled = slot.Bone.Active;
@@ -145,7 +157,7 @@ namespace Spine.Unity {
 			}
 		}
 
-		void AddCollidersForSkin (Skin skin, int slotIndex, PolygonCollider2D[] previousColliders, ref int collidersCount) {
+		void AddCollidersForSkin (Skin skin, Skeleton skeleton, int slotIndex, PolygonCollider2D[] previousColliders, ref int collidersCount) {
 			if (skin == null) return;
 			List<Skin.SkinEntry> skinEntries = new List<Skin.SkinEntry>();
 			skin.GetAttachments(slotIndex, skinEntries);
@@ -162,7 +174,7 @@ namespace Spine.Unity {
 						PolygonCollider2D bbCollider = collidersCount < previousColliders.Length ?
 							previousColliders[collidersCount] : gameObject.AddComponent<PolygonCollider2D>();
 						++collidersCount;
-						SkeletonUtility.SetColliderPointsLocal(bbCollider, slot, boundingBoxAttachment);
+						SkeletonUtility.SetColliderPointsLocal(bbCollider, skeleton, slot, boundingBoxAttachment);
 						bbCollider.isTrigger = isTrigger;
 						bbCollider.usedByEffector = usedByEffector;
 						bbCollider.usedByComposite = usedByComposite;
@@ -211,9 +223,10 @@ namespace Spine.Unity {
 		}
 
 		void LateUpdate () {
-			if (slot != null && (slot.Attachment != currentAttachment || skinBoneEnabled != slot.Bone.Active)) {
+			var slotPose = slot.AppliedPose;
+			if (slot != null && (slotPose.Attachment != currentAttachment || skinBoneEnabled != slot.Bone.Active)) {
 				skinBoneEnabled = slot.Bone.Active;
-				MatchAttachment(slot.Attachment);
+				MatchAttachment(slotPose.Attachment);
 			}
 		}
 
@@ -248,6 +261,22 @@ namespace Spine.Unity {
 				}
 			}
 		}
-	}
 
+		#region Transfer of Deprecated Fields
+#if UNITY_EDITOR && AUTO_UPGRADE_TO_43_COMPONENTS
+		public virtual void UpgradeTo43 () {
+			wasUpgradedTo43 = true;
+			if (skeletonRenderer == null) {
+				Component previousReference = previousSkeletonRenderer != null ? previousSkeletonRenderer : this;
+				skeletonRenderer = previousReference.GetComponent<SkeletonRenderer>();
+				if (skeletonRenderer == null)
+					Debug.LogError("Please manually re-assign SkeletonRenderer at BoundingBoxFollower, " +
+						"automatic upgrade failed.", this);
+			}
+		}
+		[SerializeField, HideInInspector, FormerlySerializedAs("skeletonRenderer")] Component previousSkeletonRenderer;
+		[SerializeField] protected bool wasUpgradedTo43 = false;
+#endif
+		#endregion
+	}
 }

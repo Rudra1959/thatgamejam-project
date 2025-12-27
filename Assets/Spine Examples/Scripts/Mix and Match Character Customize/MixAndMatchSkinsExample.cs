@@ -146,7 +146,7 @@ namespace Spine.Unity.Examples {
 
 			// Use the repacked skin.
 			skeletonAnimation.Skeleton.Skin = repackedSkin;
-			skeletonAnimation.Skeleton.SetSlotsToSetupPose();
+			skeletonAnimation.Skeleton.SetupPoseSlots();
 			skeletonAnimation.AnimationState.Apply(skeletonAnimation.Skeleton);
 
 			// `GetRepackedSkin()` and each call to `GetRemappedClone()` with parameter `premultiplyAlpha` set to `true`
@@ -189,7 +189,7 @@ namespace Spine.Unity.Examples {
 			AddEquipmentSkinsTo(resultCombinedSkin);
 
 			skeleton.SetSkin(resultCombinedSkin);
-			skeleton.SetSlotsToSetupPose();
+			skeleton.SetupPoseSlots();
 		}
 	}
 }
