@@ -50,7 +50,7 @@ namespace Spine.Unity.Prototyping {
 		void OnValidate () {
 			ISkeletonComponent skeletonComponent = GetComponent<ISkeletonComponent>();
 			if (skeletonComponent != null) {
-				skeletonComponent.Skeleton.SetSlotsToSetupPose();
+				skeletonComponent.Skeleton.SetupPoseSlots();
 				IAnimationStateComponent animationStateComponent = GetComponent<IAnimationStateComponent>();
 				if (animationStateComponent != null && animationStateComponent.AnimationState != null) {
 					animationStateComponent.AnimationState.Apply(skeletonComponent.Skeleton);

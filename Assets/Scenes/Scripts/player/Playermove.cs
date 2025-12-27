@@ -53,7 +53,7 @@ public class PlayerController25D : MonoBehaviour
         string requiredAnim = (h != 0) ? walkAnim : idleAnim;
         if (skeletonAnimation.AnimationName != requiredAnim)
         {
-            skeletonAnimation.state.SetAnimation(0, requiredAnim, true);
+            skeletonAnimation.AnimationState.SetAnimation(0, requiredAnim, true);
         }
     }
 

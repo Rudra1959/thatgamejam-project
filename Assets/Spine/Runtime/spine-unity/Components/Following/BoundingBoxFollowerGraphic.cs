@@ -41,7 +41,7 @@ namespace Spine.Unity {
 #else
 	[ExecuteInEditMode]
 #endif
-	[HelpURL("http://esotericsoftware.com/spine-unity#BoundingBoxFollowerGraphic")]
+	[HelpURL("http://esotericsoftware.com/spine-unity-utility-components#BoundingBoxFollowerGraphic")]
 	public class BoundingBoxFollowerGraphic : MonoBehaviour {
 		internal static bool DebugMessages = true;
 
@@ -80,7 +80,7 @@ namespace Spine.Unity {
 			Initialize();
 		}
 
-		void HandleRebuild (SkeletonGraphic sr) {
+		void HandleRebuild (ISkeletonRenderer sr) {
 			//if (BoundingBoxFollowerGraphic.DebugMessages) Debug.Log("Skeleton was rebuilt. Repopulating BoundingBoxFollowerGraphic.");
 			Initialize();
 		}
@@ -99,7 +99,6 @@ namespace Spine.Unity {
 			// Don't reinitialize if the setup did not change.
 			if (!overwrite &&
 				colliderTable.Count > 0 && slot != null &&   // Slot is set and colliders already populated.
-				skeletonGraphic.Skeleton == slot.Skeleton && // Skeleton object did not change.
 				slotName == slot.Data.Name                   // Slot object did not change.
 			)
 				return;
@@ -127,10 +126,10 @@ namespace Spine.Unity {
 			if (this.gameObject.activeInHierarchy) {
 				float scale = skeletonGraphic.MeshScale;
 				foreach (Skin skin in skeleton.Data.Skins)
-					AddCollidersForSkin(skin, slotIndex, colliders, scale, ref requiredCollidersCount);
+					AddCollidersForSkin(skin, skeleton, slotIndex, colliders, scale, ref requiredCollidersCount);
 
 				if (skeleton.Skin != null)
-					AddCollidersForSkin(skeleton.Skin, slotIndex, colliders, scale, ref requiredCollidersCount);
+					AddCollidersForSkin(skeleton.Skin, skeleton, slotIndex, colliders, scale, ref requiredCollidersCount);
 			}
 			DisposeExcessCollidersAfter(requiredCollidersCount);
 			skinBoneEnabled = slot.Bone.Active;
@@ -146,7 +145,7 @@ namespace Spine.Unity {
 			}
 		}
 
-		void AddCollidersForSkin (Skin skin, int slotIndex, PolygonCollider2D[] previousColliders, float scale, ref int collidersCount) {
+		void AddCollidersForSkin (Skin skin, Skeleton skeleton, int slotIndex, PolygonCollider2D[] previousColliders, float scale, ref int collidersCount) {
 			if (skin == null) return;
 			List<Skin.SkinEntry> skinEntries = new List<Skin.SkinEntry>();
 			skin.GetAttachments(slotIndex, skinEntries);
@@ -163,7 +162,7 @@ namespace Spine.Unity {
 						PolygonCollider2D bbCollider = collidersCount < previousColliders.Length ?
 							previousColliders[collidersCount] : gameObject.AddComponent<PolygonCollider2D>();
 						++collidersCount;
-						SkeletonUtility.SetColliderPointsLocal(bbCollider, slot, boundingBoxAttachment, scale);
+						SkeletonUtility.SetColliderPointsLocal(bbCollider, skeleton, slot, boundingBoxAttachment, scale);
 						bbCollider.isTrigger = isTrigger;
 						bbCollider.usedByEffector = usedByEffector;
 						bbCollider.usedByComposite = usedByComposite;
@@ -212,9 +211,10 @@ namespace Spine.Unity {
 		}
 
 		void LateUpdate () {
-			if (slot != null && (slot.Attachment != currentAttachment || skinBoneEnabled != slot.Bone.Active)) {
+			var slotPose = slot.AppliedPose;
+			if (slot != null && (slotPose.Attachment != currentAttachment || skinBoneEnabled != slot.Bone.Active)) {
 				skinBoneEnabled = slot.Bone.Active;
-				MatchAttachment(slot.Attachment);
+				MatchAttachment(slotPose.Attachment);
 			}
 		}
 

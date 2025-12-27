@@ -35,6 +35,7 @@
 #define PUBLIC_SET_ICON_FOR_OBJECT
 #endif
 
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -144,7 +145,8 @@ namespace Spine.Unity.Editor {
 			Skeleton skeleton = boneComponent.hierarchy.Skeleton;
 			Texture2D icon = boneComponent.bone.Data.Length == 0 ? Icons.nullBone : Icons.boneNib;
 
-			foreach (IkConstraint c in skeleton.IkConstraints)
+			var ikConstraints = skeleton.Constraints.OfType<IkConstraint>();
+			foreach (IkConstraint c in ikConstraints)
 				if (c.Target == boneComponent.bone) {
 					icon = Icons.constraintNib;
 					break;

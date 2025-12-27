@@ -133,9 +133,9 @@ namespace Spine.Unity.Examples {
 				skeleton.SetSkin(customSkin);
 			}
 
-			//skeleton.SetSlotsToSetupPose();
-			skeleton.SetToSetupPose();
-			skeletonGraphic.Update(0);
+			//skeleton.SetupPoseSlots();
+			skeleton.SetupPose();
+			skeletonGraphic.Animation.Update(0);
 			skeletonGraphic.OverrideTexture = runtimeAtlas;
 
 			// `GetRepackedSkin()` and each call to `GetRemappedClone()` with parameter `premultiplyAlpha` set to `true`

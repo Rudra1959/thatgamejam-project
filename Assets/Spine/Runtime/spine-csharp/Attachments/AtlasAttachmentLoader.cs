@@ -37,10 +37,16 @@ namespace Spine {
 	/// </summary>
 	public class AtlasAttachmentLoader : AttachmentLoader {
 		private Atlas[] atlasArray;
+		public bool allowMissingRegions;
 
-		public AtlasAttachmentLoader (params Atlas[] atlasArray) {
+		public AtlasAttachmentLoader (params Atlas[] atlasArray)
+			: this(false, atlasArray) {
+		}
+
+		public AtlasAttachmentLoader (bool allowMissingRegions, params Atlas[] atlasArray) {
 			if (atlasArray == null) throw new ArgumentNullException("atlas", "atlas array cannot be null.");
 			this.atlasArray = atlasArray;
+			this.allowMissingRegions = allowMissingRegions;
 		}
 
 		private void LoadSequence (string name, string basePath, Sequence sequence) {
@@ -48,17 +54,18 @@ namespace Spine {
 			for (int i = 0, n = regions.Length; i < n; i++) {
 				string path = sequence.GetPath(basePath, i);
 				regions[i] = FindRegion(path);
-				if (regions[i] == null) throw new ArgumentException(string.Format("Region not found in atlas: {0} (region attachment: {1})", path, name));
+				if (regions[i] == null && !allowMissingRegions)
+					throw new ArgumentException(string.Format("Region not found in atlas: {0} (region attachment: {1})", path, name));
 			}
 		}
 
 		public RegionAttachment NewRegionAttachment (Skin skin, string name, string path, Sequence sequence) {
-			RegionAttachment attachment = new RegionAttachment(name);
+			var attachment = new RegionAttachment(name);
 			if (sequence != null)
 				LoadSequence(name, path, sequence);
 			else {
 				AtlasRegion region = FindRegion(path);
-				if (region == null)
+				if (region == null && !allowMissingRegions)
 					throw new ArgumentException(string.Format("Region not found in atlas: {0} (region attachment: {1})", path, name));
 				attachment.Region = region;
 			}
@@ -66,12 +73,12 @@ namespace Spine {
 		}
 
 		public MeshAttachment NewMeshAttachment (Skin skin, string name, string path, Sequence sequence) {
-			MeshAttachment attachment = new MeshAttachment(name);
+			var attachment = new MeshAttachment(name);
 			if (sequence != null)
 				LoadSequence(name, path, sequence);
 			else {
 				AtlasRegion region = FindRegion(path);
-				if (region == null)
+				if (region == null && !allowMissingRegions)
 					throw new ArgumentException(string.Format("Region not found in atlas: {0} (region attachment: {1})", path, name));
 				attachment.Region = region;
 			}

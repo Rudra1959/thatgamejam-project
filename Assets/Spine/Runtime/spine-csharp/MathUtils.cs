@@ -137,6 +137,12 @@ namespace Spine {
 			return value;
 		}
 
+		static public float Clamp01 (float value) {
+			if (value < 0) return 0;
+			if (value > 1) return 1;
+			return value;
+		}
+
 		static public float RandomTriangle (float min, float max) {
 			return RandomTriangle(min, max, (min + max) * 0.5f);
 		}

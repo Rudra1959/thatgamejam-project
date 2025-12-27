@@ -167,14 +167,19 @@ namespace Spine.Unity.Examples {
 			static RGBATimeline GetFillerTimeline (RGBATimeline timeline, SkeletonData skeletonData) {
 				RGBATimeline t = new RGBATimeline(1, 0, timeline.SlotIndex);
 				SlotData slotData = skeletonData.Slots.Items[t.SlotIndex];
-				t.SetFrame(0, 0, slotData.R, slotData.G, slotData.B, slotData.A);
+				Color color = slotData.GetSetupPose().GetColor();
+				t.SetFrame(0, 0, color.r, color.g, color.b, color.a);
 				return t;
 			}
 
 			static RGBA2Timeline GetFillerTimeline (RGBA2Timeline timeline, SkeletonData skeletonData) {
 				RGBA2Timeline t = new RGBA2Timeline(1, 0, timeline.SlotIndex);
 				SlotData slotData = skeletonData.Slots.Items[t.SlotIndex];
-				t.SetFrame(0, 0, slotData.R, slotData.G, slotData.B, slotData.A, slotData.R2, slotData.G2, slotData.B2);
+				var setup = slotData.GetSetupPose();
+				Color color = setup.GetColor();
+				Color? darkColorOptional = setup.GetDarkColor();
+				Color darkColor = darkColorOptional.HasValue ? darkColorOptional.Value : Color.black;
+				t.SetFrame(0, 0, color.r, color.g, color.b, color.a, darkColor.r, darkColor.g, darkColor.b);
 				return t;
 			}
 
@@ -196,37 +201,42 @@ namespace Spine.Unity.Examples {
 			}
 
 			static IkConstraintTimeline GetFillerTimeline (IkConstraintTimeline timeline, SkeletonData skeletonData) {
-				IkConstraintTimeline t = new IkConstraintTimeline(1, 0, timeline.IkConstraintIndex);
-				IkConstraintData ikConstraintData = skeletonData.IkConstraints.Items[timeline.IkConstraintIndex];
-				t.SetFrame(0, 0, ikConstraintData.Mix, ikConstraintData.Softness, ikConstraintData.BendDirection, ikConstraintData.Compress, ikConstraintData.Stretch);
+				IkConstraintTimeline t = new IkConstraintTimeline(1, 0, timeline.ConstraintIndex);
+				var ikConstraintData = (IkConstraintData)skeletonData.Constraints.Items[timeline.ConstraintIndex];
+				var setup = ikConstraintData.GetSetupPose();
+				t.SetFrame(0, 0, setup.Mix, setup.Softness, setup.BendDirection, setup.Compress, setup.Stretch);
 				return t;
 			}
 
 			static TransformConstraintTimeline GetFillerTimeline (TransformConstraintTimeline timeline, SkeletonData skeletonData) {
-				TransformConstraintTimeline t = new TransformConstraintTimeline(1, 0, timeline.TransformConstraintIndex);
-				TransformConstraintData data = skeletonData.TransformConstraints.Items[timeline.TransformConstraintIndex];
-				t.SetFrame(0, 0, data.MixRotate, data.MixX, data.MixY, data.MixScaleX, data.MixScaleY, data.MixShearY);
+				TransformConstraintTimeline t = new TransformConstraintTimeline(1, 0, timeline.ConstraintIndex);
+				var data = (TransformConstraintData)skeletonData.Constraints.Items[timeline.ConstraintIndex];
+				var setup = data.GetSetupPose();
+				t.SetFrame(0, 0, setup.MixRotate, setup.MixX, setup.MixY, setup.MixScaleX, setup.MixScaleY, setup.MixShearY);
 				return t;
 			}
 
 			static PathConstraintPositionTimeline GetFillerTimeline (PathConstraintPositionTimeline timeline, SkeletonData skeletonData) {
-				PathConstraintPositionTimeline t = new PathConstraintPositionTimeline(1, 0, timeline.PathConstraintIndex);
-				PathConstraintData data = skeletonData.PathConstraints.Items[timeline.PathConstraintIndex];
-				t.SetFrame(0, 0, data.Position);
+				PathConstraintPositionTimeline t = new PathConstraintPositionTimeline(1, 0, timeline.ConstraintIndex);
+				var data = (PathConstraintData)skeletonData.Constraints.Items[timeline.ConstraintIndex];
+				var setup = data.GetSetupPose();
+				t.SetFrame(0, 0, setup.Position);
 				return t;
 			}
 
 			static PathConstraintSpacingTimeline GetFillerTimeline (PathConstraintSpacingTimeline timeline, SkeletonData skeletonData) {
-				PathConstraintSpacingTimeline t = new PathConstraintSpacingTimeline(1, 0, timeline.PathConstraintIndex);
-				PathConstraintData data = skeletonData.PathConstraints.Items[timeline.PathConstraintIndex];
-				t.SetFrame(0, 0, data.Spacing);
+				PathConstraintSpacingTimeline t = new PathConstraintSpacingTimeline(1, 0, timeline.ConstraintIndex);
+				var data = (PathConstraintData)skeletonData.Constraints.Items[timeline.ConstraintIndex];
+				var setup = data.GetSetupPose();
+				t.SetFrame(0, 0, setup.Spacing);
 				return t;
 			}
 
 			static PathConstraintMixTimeline GetFillerTimeline (PathConstraintMixTimeline timeline, SkeletonData skeletonData) {
-				PathConstraintMixTimeline t = new PathConstraintMixTimeline(1, 0, timeline.PathConstraintIndex);
-				PathConstraintData data = skeletonData.PathConstraints.Items[timeline.PathConstraintIndex];
-				t.SetFrame(0, 0, data.RotateMix, data.MixX, data.MixY);
+				PathConstraintMixTimeline t = new PathConstraintMixTimeline(1, 0, timeline.ConstraintIndex);
+				PathConstraintData data = (PathConstraintData)skeletonData.Constraints.Items[timeline.ConstraintIndex];
+				var setup = data.GetSetupPose();
+				t.SetFrame(0, 0, setup.MixRotate, setup.MixX, setup.MixY);
 				return t;
 			}
 			#endregion

@@ -40,6 +40,7 @@ namespace Spine {
 		internal float volume;
 		internal float balance;
 
+		/// <summary>The event's setup pose data.</summary>
 		public EventData Data { get { return data; } }
 		/// <summary>The animation time this event was keyed.</summary>
 		public float Time { get { return time; } }

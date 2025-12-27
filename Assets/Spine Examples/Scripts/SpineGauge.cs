@@ -55,8 +55,8 @@ namespace Spine.Unity.Examples {
 			if (skeletonRenderer == null) return;
 			Skeleton skeleton = skeletonRenderer.skeleton; if (skeleton == null) return;
 
-			fillAnimation.Animation.Apply(skeleton, 0, percent, false, null, 1f, MixBlend.Setup, MixDirection.In);
-			skeleton.UpdateWorldTransform(Skeleton.Physics.Update);
+			fillAnimation.Animation.Apply(skeleton, 0, percent, false, null, 1f, MixBlend.Setup, MixDirection.In, false);
+			skeleton.UpdateWorldTransform(Physics.Update);
 		}
 	}
 

@@ -64,7 +64,7 @@ namespace Spine {
 		public void SetMix (Animation from, Animation to, float duration) {
 			if (from == null) throw new ArgumentNullException("from", "from cannot be null.");
 			if (to == null) throw new ArgumentNullException("to", "to cannot be null.");
-			AnimationPair key = new AnimationPair(from, to);
+			var key = new AnimationPair(from, to);
 			animationToMixTime.Remove(key);
 			animationToMixTime.Add(key, duration);
 		}
@@ -76,7 +76,7 @@ namespace Spine {
 		public float GetMix (Animation from, Animation to) {
 			if (from == null) throw new ArgumentNullException("from", "from cannot be null.");
 			if (to == null) throw new ArgumentNullException("to", "to cannot be null.");
-			AnimationPair key = new AnimationPair(from, to);
+			var key = new AnimationPair(from, to);
 			float duration;
 			if (animationToMixTime.TryGetValue(key, out duration)) return duration;
 			return defaultMix;

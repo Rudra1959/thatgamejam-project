@@ -31,7 +31,7 @@ using UnityEngine;
 
 namespace Spine.Unity {
 	[RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
-	[HelpURL("http://esotericsoftware.com/spine-unity#SkeletonRenderSeparator")]
+	[HelpURL("https://esotericsoftware.com/spine-unity-utility-components#SkeletonRenderSeparator")]
 	public class SkeletonPartsRenderer : MonoBehaviour {
 
 		#region Properties
@@ -112,7 +112,8 @@ namespace Spine.Unity {
 				meshGenerator.BuildMeshWithArrays(currentInstructions, updateTriangles);
 			}
 
-			buffers.UpdateSharedMaterials(currentInstructions.submeshInstructions);
+			bool materialsChanged;
+			buffers.GatherMaterialsFromInstructions(currentInstructions.submeshInstructions, out materialsChanged);
 
 			// STEP 3: modify mesh.
 			Mesh mesh = smartMesh.mesh;
@@ -124,9 +125,9 @@ namespace Spine.Unity {
 				meshGenerator.FillVertexData(mesh);
 				if (updateTriangles) {
 					meshGenerator.FillTriangles(mesh);
-					meshRenderer.sharedMaterials = buffers.GetUpdatedSharedMaterialsArray();
-				} else if (buffers.MaterialsChangedInLastUpdate()) {
-					meshRenderer.sharedMaterials = buffers.GetUpdatedSharedMaterialsArray();
+					meshRenderer.sharedMaterials = buffers.UpdateSharedMaterialsArray();
+				} else if (materialsChanged) {
+					meshRenderer.sharedMaterials = buffers.UpdateSharedMaterialsArray();
 				}
 				meshGenerator.FillLateVertexData(mesh);
 			}

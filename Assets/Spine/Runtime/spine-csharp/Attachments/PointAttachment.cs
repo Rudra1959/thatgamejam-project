@@ -35,7 +35,7 @@ namespace Spine {
 	/// used in similar ways, but a PointAttachment is slightly less expensive to compute and can be hidden, shown, and placed in a
 	/// skin.
 	/// <p>
-	/// See <a href="http://esotericsoftware.com/spine-point-attachments">Point Attachments</a> in the Spine User Guide.
+	/// See <a href="https://esotericsoftware.com/spine-points">Point Attachments</a> in the Spine User Guide.
 	/// </summary>
 	public class PointAttachment : Attachment {
 		internal float x, y, rotation;
@@ -55,11 +55,11 @@ namespace Spine {
 			rotation = other.rotation;
 		}
 
-		public void ComputeWorldPosition (Bone bone, out float ox, out float oy) {
+		public void ComputeWorldPosition (BonePose bone, out float ox, out float oy) {
 			bone.LocalToWorld(this.x, this.y, out ox, out oy);
 		}
 
-		public float ComputeWorldRotation (Bone bone) {
+		public float ComputeWorldRotation (BonePose bone) {
 			float r = rotation * MathUtils.DegRad, cos = (float)Math.Cos(r), sin = (float)Math.Sin(r);
 			float x = cos * bone.a + sin * bone.b;
 			float y = cos * bone.c + sin * bone.d;
