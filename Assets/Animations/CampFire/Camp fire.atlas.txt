@@ -1,0 +1,22 @@
+Camp fire.png
+size:2048,512
+filter:Linear,Linear
+pma:true
+A
+bounds:2,113,382,605
+rotate:90
+B
+bounds:1589,18,292,477
+C
+bounds:1071,2,213,357
+offsets:0,0,213,358
+rotate:90
+D
+bounds:1883,307,147,188
+offsets:0,24,188,212
+Dust
+bounds:1071,217,516,278
+offsets:1,1,519,282
+Wood
+bounds:609,58,460,437
+offsets:1,6,463,444
