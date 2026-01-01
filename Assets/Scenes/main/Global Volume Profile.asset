@@ -90,7 +90,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 6
   dirtTexture:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: {fileID: 0}
     dimension: 1
   dirtIntensity:
@@ -205,6 +205,8 @@ MonoBehaviour:
   - {fileID: 2172193265792667375}
   - {fileID: 3974394261235890950}
   - {fileID: -7643298342911792851}
+  - {fileID: 644350136725499998}
+  - {fileID: 2244999098864914494}
 --- !u!114 &398572080895203747
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -227,6 +229,31 @@ MonoBehaviour:
   gain:
     m_OverrideState: 1
     m_Value: {x: 1, y: 0.9458789, z: 0.94159734, w: 0.050970554}
+--- !u!114 &644350136725499998
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29fa0085f50d5e54f8144f766051a691, type: 3}
+  m_Name: FilmGrain
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FilmGrain
+  active: 0
+  type:
+    m_OverrideState: 1
+    m_Value: 10
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.01
+  response:
+    m_OverrideState: 1
+    m_Value: 0.328
+  texture:
+    m_OverrideState: 1
+    m_Value: {fileID: 10910, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &2172193265792667375
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -249,6 +276,34 @@ MonoBehaviour:
   balance:
     m_OverrideState: 1
     m_Value: -20
+--- !u!114 &2244999098864914494
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 899c54efeace73346a0a16faa3afe726, type: 3}
+  m_Name: Vignette
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.Vignette
+  active: 1
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  center:
+    m_OverrideState: 0
+    m_Value: {x: 0.5, y: 0.5}
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.2
+  smoothness:
+    m_OverrideState: 1
+    m_Value: 1
+  rounded:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &3974394261235890950
 MonoBehaviour:
   m_ObjectHideFlags: 3
