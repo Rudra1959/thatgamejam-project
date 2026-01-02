@@ -46,7 +46,7 @@ public class PlayerController25D : MonoBehaviour
         // 2. Jumping Logic
         isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, groundCheckDistance, groundLayer);
         if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded) {
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce, 0);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0);
         }
 
         // 3. Survival Interactions
@@ -110,7 +110,7 @@ public class PlayerController25D : MonoBehaviour
     }
 
     void FixedUpdate() {
-        rb.velocity = new Vector3(moveInput * moveSpeed, rb.velocity.y, 0);
+        rb.linearVelocity = new Vector3(moveInput * moveSpeed, rb.linearVelocity.y, 0);
         Vector3 targetPos = transform.position + camOffset;
         Camera.main.transform.position = Vector3.SmoothDamp(Camera.main.transform.position, targetPos, ref camVelocity, camSmoothTime);
         Camera.main.transform.LookAt(transform.position + Vector3.up * 1.5f);
