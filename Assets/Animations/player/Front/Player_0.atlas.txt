@@ -1,0 +1,91 @@
+Player_0.png
+size:1024,512
+filter:Linear,Linear
+pma:true
+Bandage
+bounds:970,343,48,62
+offsets:1,1,50,64
+Brow
+bounds:2,2,87,16
+offsets:1,1,89,18
+Face
+bounds:826,320,142,187
+offsets:1,141,221,329
+Hair
+bounds:2,20,262,204
+offsets:0,0,302,204
+Hat
+bounds:2,226,272,281
+offsets:12,18,299,328
+Hat strings
+bounds:526,298,160,209
+offsets:2,1,163,213
+Layer 5 Copy
+bounds:790,91,50,100
+offsets:1,1,52,102
+rotate:90
+Layer 5 Copy 2
+bounds:435,108,56,132
+offsets:1,1,58,134
+Layer 5 Copy 4
+bounds:970,407,50,100
+offsets:1,1,52,102
+Layer 5 Copy 5
+bounds:266,60,56,132
+offsets:1,1,58,134
+rotate:90
+Layer 7 Copy
+bounds:949,86,55,80
+offsets:1,1,57,82
+Layer 7 Copy 2
+bounds:892,61,55,80
+offsets:1,1,57,82
+Left foot
+bounds:634,86,96,56
+offsets:1,1,98,58
+rotate:90
+Lower lid
+bounds:266,19,102,39
+offsets:2,1,105,41
+Neck
+bounds:400,49,57,71
+offsets:6,1,64,78
+rotate:90
+Pupil left
+bounds:970,320,28,21
+offsets:1,2,30,25
+Pupil right
+bounds:493,218,27,22
+offsets:2,1,31,25
+Right foot
+bounds:692,85,96,56
+offsets:1,1,98,58
+Right leg
+bounds:703,143,122,157
+offsets:2,1,125,160
+Right leg Copy
+bounds:526,184,112,175
+offsets:1,1,114,177
+rotate:90
+Upper lid
+bounds:790,65,98,24
+offsets:1,1,100,26
+backpack
+bounds:276,242,248,265
+offsets:1,1,250,267
+bagstraps
+bounds:493,64,139,118
+offsets:1,1,141,120
+leftlegcalf
+bounds:827,143,112,175
+offsets:1,1,114,177
+leftlegthigh
+bounds:276,118,122,157
+offsets:1,1,125,160
+rotate:90
+shirt
+bounds:688,302,136,205
+offsets:0,43,165,248
+smallbag
+bounds:941,168,150,72
+rotate:90
