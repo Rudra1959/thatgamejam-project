@@ -15,6 +15,6 @@ MonoBehaviour:
   serializedMaterialOverrides: []
   textureLoadingMode: 0
   onDemandTextureLoader: {fileID: 0}
-  atlasFile: {fileID: 4900000, guid: 56c3f9351d53337438726331caad6aef, type: 3}
+  atlasFile: {fileID: 4900000, guid: 1422f9a5bdcbccc4981b3b921f08bfca, type: 3}
   materials:
   - {fileID: 2100000, guid: 94db3afbbaa146d48b92f9face06d5ba, type: 2}
