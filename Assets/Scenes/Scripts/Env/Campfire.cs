@@ -16,13 +16,13 @@ public class Campfire : MonoBehaviour
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
-            InventoryManager inv = player.GetComponent<InventoryManager>();
+           /* InventoryManager inv = player.GetComponent<InventoryManager>();
             if (inv != null && inv.ConsumeSticks(sticksRequired))
             {
                 isLit = true;
                 if (fireVisual != null) fireVisual.SetActive(true);
                 Debug.Log("Fire started! Character is warming up.");
-            }
+            }*/
         }
     }
 
