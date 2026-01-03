@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Player side_SkeletonData
   m_EditorClassIdentifier: spine-unity::Spine.Unity.SkeletonDataAsset
   atlasAssets:
-  - {fileID: 11400000, guid: 0cea60b0d135d85479937358d378f4a8, type: 2}
+  - {fileID: 11400000, guid: b51013282af631b4988ab8131103276d, type: 2}
   scale: 0.01
-  skeletonJSON: {fileID: 4900000, guid: 0d0762ebf46d07945a2e8f55272ff865, type: 3}
+  skeletonJSON: {fileID: 4900000, guid: 85a0e9c8fc5b859488ae42e31f020585, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0
