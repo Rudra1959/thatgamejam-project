@@ -2,117 +2,122 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Spine.Unity;
 
-[RequireComponent(typeof(Rigidbody), typeof(PlayerStats), typeof(InventoryManager))]
-public class PlayerController25D : MonoBehaviour
+[RequireComponent(typeof(Rigidbody), typeof(InventoryManager))]
+public class PlayerController : MonoBehaviour
 {
-    [Header("Movement Physics")]
+    [Header("Movement Settings")]
     public float moveSpeed = 8f;
-    public float jumpForce = 14f;
+    public float jumpForce = 12f;
     public LayerMask groundLayer;
-    public float groundCheckDistance = 0.4f;
+    public float groundCheckDistance = 0.5f;
 
     [Header("Spine Visuals")]
     public SkeletonAnimation spine;
-    public bool flipInitialDirection = false; 
     [SpineAnimation] public string walkAnim;
-    [SpineAnimation] public string jumpAnim;
     [SpineAnimation] public string idleAnim;
+    [SpineAnimation] public string jumpAnim;
 
-    [Header("Camera Settings")]
-    public Vector3 camOffset = new Vector3(0, 5, -12);
-    public float camSmoothTime = 0.15f;
+    [Header("Interactions")]
+    public GameObject interactPrompt; 
 
     private Rigidbody rb;
-    private float moveInput;
-    private Vector3 camVelocity;
-    private bool isGrounded;
     private InventoryManager inv;
+    private float moveInput;
+    private bool isGrounded;
+    private ItemPickup currentItem;
 
-    void Start() {
+    void Start()
+    {
         rb = GetComponent<Rigidbody>();
         inv = GetComponent<InventoryManager>();
+
+        // Physics Setup
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
         
-        if (spine == null) spine = GetComponentInChildren<SkeletonAnimation>();
+        if (interactPrompt != null) interactPrompt.SetActive(false);
     }
 
-    void Update() {
-        // 1. Movement Input
+    void Update()
+    {
+        // 1. INPUT: D is Right (+1), A is Left (-1)
         moveInput = 0;
-        if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed) moveInput = -1;
-        if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed) moveInput = 1;
+        if (Keyboard.current.aKey.isPressed) moveInput = -1; 
+        if (Keyboard.current.dKey.isPressed) moveInput = 1;  
 
-        // 2. Jumping Logic
-        isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, groundCheckDistance, groundLayer);
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded) {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0);
+        // 2. STABLE GROUND CHECK
+        // We use a Raycast with a small offset to ensure it hits the 3D mesh correctly
+        isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.2f, Vector3.down, groundCheckDistance, groundLayer);
+
+        // 3. JUMP LOGIC
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
         }
 
-        // 3. Survival Interactions
-        if (Keyboard.current.eKey.wasPressedThisFrame) HandleManualPickup();
-        if (Keyboard.current.rKey.wasPressedThisFrame) HandleFireLighting();
-        if (Keyboard.current.qKey.wasPressedThisFrame) inv.ToggleInventory();
+        // 4. INTERACTION
+        if (currentItem != null && Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            currentItem.Pickup();
+            currentItem = null;
+            if (interactPrompt != null) interactPrompt.SetActive(false);
+        }
 
         HandleVisuals();
     }
 
-    void HandleManualPickup() {
-        Collider[] items = Physics.OverlapSphere(transform.position, 2f);
-        foreach (var hit in items) {
-            if (hit.CompareTag("Pickup")) {
-                hit.GetComponent<ItemPickup>()?.Pickup();
-                break; 
-            }
+    void FixedUpdate()
+    {
+        // Move the player physically
+        rb.linearVelocity = new Vector3(moveInput * moveSpeed, rb.linearVelocity.y, rb.linearVelocity.z);
+    }
+
+    void HandleVisuals()
+    {
+        if (spine == null) return;
+
+        // FIXED FLIPPING LOGIC: Ensuring ScaleX matches direction exactly
+        if (moveInput > 0) spine.skeleton.ScaleX = -1; // Facing Right
+        else if (moveInput < 0) spine.skeleton.ScaleX = 1; // Facing Left
+
+        // ANIMATION STATE MACHINE
+        string targetAnim = idleAnim;
+
+        if (!isGrounded)
+        {
+            targetAnim = jumpAnim;
+        }
+        else if (moveInput != 0)
+        {
+            targetAnim = walkAnim;
+        }
+        else
+        {
+            targetAnim = idleAnim;
+        }
+
+        // Play animation only if it's not already playing
+        if (spine.AnimationName != targetAnim)
+        {
+            spine.AnimationState.SetAnimation(0, targetAnim, true);
         }
     }
 
-    void HandleFireLighting() {
-        Collider[] hits = Physics.OverlapSphere(transform.position, 2f);
-        foreach (var hit in hits) {
-            if (hit.CompareTag("FirePit")) {
-                if (inv.sticks >= 3) {
-                    hit.GetComponent<Campfire>()?.AttemptToLight();
-                    inv.sticks -= 3;
-                } else {
-                    Debug.Log("Not sufficient sticks! You need 3.");
-                }
-            }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Pickup"))
+        {
+            currentItem = other.GetComponent<ItemPickup>();
+            if (interactPrompt != null) interactPrompt.SetActive(true);
         }
     }
 
-    void HandleVisuals() {
-        if (moveInput != 0) {
-            float direction = moveInput;
-            if (flipInitialDirection) direction *= -1;
-            spine.skeleton.ScaleX = direction > 0 ? 1 : -1;
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Pickup"))
+        {
+            currentItem = null;
+            if (interactPrompt != null) interactPrompt.SetActive(false);
         }
-
-        if (!isGrounded) {
-            UpdateSpine(jumpAnim, 1f, true); 
-        } else if (moveInput != 0) {
-            UpdateSpine(walkAnim, 1f, true); 
-        } else {
-            if (!string.IsNullOrEmpty(idleAnim)) {
-                UpdateSpine(idleAnim, 1f, true); 
-            } else {
-                UpdateSpine(walkAnim, 0f, true); // Freeze walk as Idle
-            }
-        }
-    }
-
-    void UpdateSpine(string name, float speed, bool loop) {
-        if (string.IsNullOrEmpty(name)) return;
-        spine.timeScale = speed;
-        if (spine.AnimationName != name) {
-            spine.AnimationState.SetAnimation(0, name, loop);
-        }
-    }
-
-    void FixedUpdate() {
-        rb.linearVelocity = new Vector3(moveInput * moveSpeed, rb.linearVelocity.y, 0);
-        Vector3 targetPos = transform.position + camOffset;
-        Camera.main.transform.position = Vector3.SmoothDamp(Camera.main.transform.position, targetPos, ref camVelocity, camSmoothTime);
-        Camera.main.transform.LookAt(transform.position + Vector3.up * 1.5f);
     }
 }

@@ -1,24 +1,24 @@
 using UnityEngine;
 
-public class PerfectSideCamera : MonoBehaviour
+public class SideScrollCamera : MonoBehaviour
 {
-    public Transform target; // Drag Player here
-    public Vector3 offset = new Vector3(0, 4, -12); // Height and Distance
-    public float smoothTime = 0.3f;
-    
-    private Vector3 velocity = Vector3.zero;
+    public Transform player;       
+    public float distance = 10.0f; 
+    public float height = 3.0f;   
+    public float smoothSpeed = 0.125f; 
 
     void LateUpdate()
     {
-        if (target == null) return;
+        if (player == null) return;
 
-        // Calculate where the camera should be
-        Vector3 desiredPosition = target.position + offset;
+        // Calculate a target position that maintains a fixed side view
+        // The camera's depth (Z) is offset from the player's Z by 'distance'
+        Vector3 targetPosition = new Vector3(player.position.x, player.position.y + height, player.position.z - distance);
 
-        // Smoothly move to that position
-        transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
+        // Smoothly follow
+        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed);
 
-        // Force the camera to always look at the player's chest
-        transform.LookAt(target.position + Vector3.up * 1.5f);
+        // Lock rotation to look at player
+        transform.LookAt(player.position + Vector3.up * (height * 0.5f));
     }
 }
