@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: small bald tree
+      name: Tree_0
       rect:
         serializedVersion: 2
         x: 13
@@ -112,14 +112,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 011379f82dbd4c043afda97a76f2459f
-      internalID: -1215650942
+      spriteID: 99276508bfc853c4794b1a7a3a34412d
+      internalID: -1239464877
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: big stick
+      name: Tree_1
       rect:
         serializedVersion: 2
         x: 459
@@ -134,14 +134,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 533ec0577f1725d4b9b234b263f4a7ee
-      internalID: -1559365593
+      spriteID: 18623713ea8209641ae56b6b8f134d15
+      internalID: -1087360229
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: small stick
+      name: Tree_2
       rect:
         serializedVersion: 2
         x: 511
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bf21243ebeb304e4796ccf1b5eb33b16
-      internalID: 2001631570
+      spriteID: da7bbc19a115abc47829319c6f8970c0
+      internalID: -991330777
       vertices: []
       indices: 
       edges: []
@@ -178,7 +178,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 89e72ae25e3d1e8468cb4e901c219811
+      spriteID: f818d99b3d4add94e9c9ccebe48f3307
       internalID: -259748229
       vertices: []
       indices: 
@@ -200,7 +200,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 49597e56f13328b4790c28aeb813dc2a
+      spriteID: 397c58dc9b36c3341b16b6330ebb46c1
       internalID: -259745418
       vertices: []
       indices: 
@@ -224,11 +224,11 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
+      Tree_0: -1239464877
+      Tree_1: -1087360229
+      Tree_2: -991330777
       Tree_3: -259748229
       Tree_4: -259745418
-      big stick: -1559365593
-      small bald tree: -1215650942
-      small stick: 2001631570
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
