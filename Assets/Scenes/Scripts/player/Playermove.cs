@@ -9,7 +9,10 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 8f;
     public float jumpForce = 12f;
     public LayerMask groundLayer;
-    public float groundCheckDistance = 0.5f;
+    
+    [Tooltip("Size of the circle checking for ground. Increase if jittering on bridge.")]
+    public float groundCheckRadius = 0.3f;
+    public float groundCheckDistance = 0.4f;
 
     [Header("Spine Visuals")]
     public SkeletonAnimation spine;
@@ -31,7 +34,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         inv = GetComponent<InventoryManager>();
 
-        // Physics Setup
+        // Physics Setup: Ensure Z is locked so we don't fall off the 3D path
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
         
@@ -40,22 +43,22 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // 1. INPUT: D is Right (+1), A is Left (-1)
+        // 1. INPUT
         moveInput = 0;
         if (Keyboard.current.aKey.isPressed) moveInput = -1; 
         if (Keyboard.current.dKey.isPressed) moveInput = 1;  
 
-        // 2. STABLE GROUND CHECK
-        // We use a Raycast with a small offset to ensure it hits the 3D mesh correctly
-        isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.2f, Vector3.down, groundCheckDistance, groundLayer);
+        // 2. STICKY GROUND CHECK (Using SphereCast for Bridge/Mountain Edges)
+        // This checks a wide area so you don't 'jitter' over small gaps
+        isGrounded = Physics.SphereCast(transform.position + Vector3.up * 0.5f, groundCheckRadius, Vector3.down, out _, groundCheckDistance + 0.5f, groundLayer);
 
-        // 3. JUMP LOGIC
+        // 3. JUMP
         if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
         }
 
-        // 4. INTERACTION
+        // 4. INTERACTION (E)
         if (currentItem != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
             currentItem.Pickup();
@@ -68,7 +71,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Move the player physically
+        // 5. MOVEMENT: Smooth linear velocity
         rb.linearVelocity = new Vector3(moveInput * moveSpeed, rb.linearVelocity.y, rb.linearVelocity.z);
     }
 
@@ -76,12 +79,12 @@ public class PlayerController : MonoBehaviour
     {
         if (spine == null) return;
 
-        // FIXED FLIPPING LOGIC: Ensuring ScaleX matches direction exactly
+        // 6. FLIPPING: Fixed to match your specific Spine Export direction
         if (moveInput > 0) spine.skeleton.ScaleX = -1; // Facing Right
         else if (moveInput < 0) spine.skeleton.ScaleX = 1; // Facing Left
 
-        // ANIMATION STATE MACHINE
-        string targetAnim = idleAnim;
+        // 7. ANIMATION STATE MACHINE
+        string targetAnim;
 
         if (!isGrounded)
         {
@@ -96,7 +99,6 @@ public class PlayerController : MonoBehaviour
             targetAnim = idleAnim;
         }
 
-        // Play animation only if it's not already playing
         if (spine.AnimationName != targetAnim)
         {
             spine.AnimationState.SetAnimation(0, targetAnim, true);
